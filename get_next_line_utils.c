@@ -6,7 +6,7 @@
 /*   By: istasheu <istasheu@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:30:59 by istasheu          #+#    #+#             */
-/*   Updated: 2023/11/30 13:15:32 by istasheu         ###   ########.fr       */
+/*   Updated: 2023/11/30 16:53:13 by istasheu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,4 +96,58 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		dst[i++] = *s2++;
 	dst[i] = '\0';
 	return (dst);
+}
+
+static char	*ft_next(char **temp)
+{
+	char	*line;
+	char	*ptr;
+
+	ptr = *temp;
+	while (*ptr && *ptr != '\n')
+		++ptr;
+	ptr += (*ptr == '\n');
+	line = ft_substr (*temp, 0, (size_t)(ptr - *temp));
+	if (!line)
+	{
+		free (*temp);
+		return (NULL);
+	}
+	ptr = ft_substr (ptr, 0, ft_strlen (ptr));
+	free (*temp);
+	*temp = ptr;
+	return (line);
+}
+
+/*int main() {
+      const char *sampleText = "This is line 1\nThis is line 2\nThis is line 3\nEnd of text";
+
+    char *temp = ft_strdup(sampleText);
+
+    if (!temp) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
+
+    printf("Original Text:\n%s\n", temp);
+
+    char *line;
+    int lineCount = 1;
+
+    free(temp);
+    return 0;
+}*/
+
+int main()
+{
+    char *temp = strdup("Hello\nWorld\nHow are you?");
+    char *nextLine;
+
+    while (*temp && (nextLine = ft_next(&temp)) != NULL)
+    {
+        printf("Next line: %s\n", nextLine);
+        free(nextLine);
+    }
+
+    return 0;
 }
