@@ -6,7 +6,7 @@
 /*   By: istasheu <istasheu@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:44:17 by istasheu          #+#    #+#             */
-/*   Updated: 2023/11/29 12:51:08 by istasheu         ###   ########.fr       */
+/*   Updated: 2023/12/05 14:24:58 by istasheu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,9 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 10000
+# endif
 
 #endif
