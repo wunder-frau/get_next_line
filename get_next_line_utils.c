@@ -182,6 +182,36 @@ static char *ft_read(char *temp, int fd, char *buf)
 	free(buf);
 	return (temp);
 }
+
+char	*get_next_line(int fd)
+{
+	static char	*temp[1024];
+	char		*buf;
+
+	if (fd == -1 || BUFFER_SIZE < 1)
+		return (NULL);
+	if (!temp[fd])
+		temp[fd] = ft_strdup("");
+	if (!temp[fd])
+		return (NULL);
+	buf = malloc(sizeof(*buf) * (BUFFER_SIZE + 1));
+	if (!buf)
+	{
+		free (temp[fd]);
+		return (NULL);
+	}
+	temp[fd] = ft_read(temp[fd], fd, buf);
+	if (!temp[fd])
+		return (NULL);
+	if (!*temp[fd])
+	{
+		free (temp[fd]);
+		temp[fd] = NULL;
+		return (NULL);
+	}
+	return (ft_next(&temp[fd]));
+}
+
 /*int main()
 {
     char *temp = ft_strdup("Hello\nWorld\nHow are you?");
@@ -197,7 +227,7 @@ static char *ft_read(char *temp, int fd, char *buf)
 }*/
 
 
-int main() {
+/*int main() {
     // Open a file for reading (replace "your_file.txt" with the actual file path)
     int fd = open("your_file.txt", O_RDONLY);
 
@@ -244,7 +274,7 @@ int main() {
     free(buf);
 
     return 0;
-}
+}*/
 
 
 /*int main() {
