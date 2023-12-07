@@ -6,15 +6,15 @@
 /*   By: istasheu <istasheu@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:30:59 by istasheu          #+#    #+#             */
-/*   Updated: 2023/12/05 14:30:03 by istasheu         ###   ########.fr       */
+/*   Updated: 2023/12/07 10:45:45 by istasheu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
+#include <fcntl.h>*/
 
 size_t	ft_strlen(const char *str)
 {
@@ -26,17 +26,14 @@ size_t	ft_strlen(const char *str)
 	return ((size_t)(p - str));
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char const *s, int c)
 {
-	while(*s || (unsigned char)c == "\0")
-	{
-		if (*s == (unsigned char)c)
-		{
-			return ((char *)s);
-		}
-		s++;
-	}
-	return (0);
+	while (*s && *s != (unsigned char)c)
+		++s;
+	if (*s == (unsigned char)c)
+		return ((char *)(unsigned long)s);
+	else
+		return (0);
 }
 
 char	*ft_strdup(const char *s1)
@@ -44,7 +41,7 @@ char	*ft_strdup(const char *s1)
 	char	*dst;
 	size_t	i;
 
-	dst = (char *)malloc(sizeof(char) * (ft_strlen((char *)s1) + 1));
+	dst = (char *)malloc(sizeof(char) * (ft_strlen(s1) + 1));
 	i = 0;
 	if (!dst)
 		return (NULL);
@@ -83,7 +80,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (substr);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+/*char	*ft_strjoin(char const *s1, char const *s2)
 {
 	unsigned int	i;
 	char			*dst;
@@ -100,9 +97,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		dst[i++] = *s2++;
 	dst[i] = '\0';
 	return (dst);
-}
+}*/
 
-/*char *ft_strjoin(char *s1, char const *s2)
+char *ft_strjoin(char *s1, char const *s2)
 {
     if (s1 == NULL)
     {
@@ -133,10 +130,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
     free(s1);
     return s3;
-}*/
+}
 
 
-static char	*ft_next(char **temp)
+/*static char	*ft_next(char **temp)
 {
 	char	*line;
 	char	*ptr;
@@ -210,7 +207,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	return (ft_next(&temp[fd]));
-}
+}*/
 
 /*int main()
 {
