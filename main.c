@@ -8,6 +8,7 @@ int  main(int ac, char **av)
 {
 	int	fd;
 	char    *line;
+
 	(void) av;
 	if (ac != 2)
 		return (1);

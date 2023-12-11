@@ -6,7 +6,7 @@
 /*   By: istasheu <istasheu@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:51:49 by istasheu          #+#    #+#             */
-/*   Updated: 2023/12/07 09:54:16 by istasheu         ###   ########.fr       */
+/*   Updated: 2023/12/11 17:46:54 by istasheu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@ static char	*ft_next(char **temp)
 	char	*ptr;
 
 	ptr = *temp;
-	while (*ptr && *ptr != '\n')
-		++ptr;
-	ptr += (*ptr == '\n');
+	while (*ptr != '\0' && *ptr != '\n')
+		ptr++;
+	if (*ptr == '\n')
+		ptr++;
 	line = ft_substr (*temp, 0, (size_t)(ptr - *temp));
 	if (!line)
 	{
@@ -34,21 +35,21 @@ static char	*ft_next(char **temp)
 	return (line);
 }
 
-static char *ft_read(char *temp, int fd, char *buf)
+static char	*ft_read(char *temp, int fd, char *buf)
 {
-	ssize_t i;
+	ssize_t	i;
 
 	i = 1;
 	while (i && !ft_strchr(temp, '\n'))
 	{
 		i = read(fd, buf, BUFFER_SIZE);
-		if (i == -1) 
+		if (i == -1)
 		{
 			free(buf);
 			free(temp);
-			return(NULL);
+			return (NULL);
 		}
-		buf[i] = 0;
+		buf[i] = '\0';
 		temp = ft_strjoin(temp, buf);
 		if (!temp)
 		{
@@ -60,35 +61,43 @@ static char *ft_read(char *temp, int fd, char *buf)
 	return (temp);
 }
 
+static char	*ft_read_and_update(char *temp, int fd, char *buf)
+{
+	temp = ft_read(temp, fd, buf);
+	if (!temp)
+	{
+		temp = NULL;
+		return (NULL);
+	}
+	if (!*temp)
+	{
+		free(temp);
+		temp = NULL;
+		return (NULL);
+	}
+	return (temp);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	*temp[1024];
+	static char	*temp;
 	char		*buf;
 
 	if (fd == -1 || BUFFER_SIZE < 1)
 		return (NULL);
-	if (!temp[fd])
-		temp[fd] = ft_strdup("");
-	if (!temp[fd])
+	if (!temp)
+		temp = ft_strdup("");
+	if (!temp)
 		return (NULL);
 	buf = malloc(sizeof(*buf) * (BUFFER_SIZE + 1));
 	if (!buf)
 	{
-		free (temp[fd]);
-		temp[fd] = NULL;
+		free (temp);
+		temp = NULL;
 		return (NULL);
 	}
-	temp[fd] = ft_read(temp[fd], fd, buf);
-	if (!temp[fd])
-	{
-		temp[fd] = NULL;
+	temp = ft_read_and_update(temp, fd, buf);
+	if (!temp)
 		return (NULL);
-	}
-	if (!*temp[fd])
-	{
-		free (temp[fd]);
-		temp[fd] = NULL;
-		return (NULL);
-	}
-	return (ft_next(&temp[fd]));
+	return (ft_next(&temp));
 }
