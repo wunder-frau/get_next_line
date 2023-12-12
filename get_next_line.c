@@ -12,44 +12,44 @@
 
 #include "get_next_line.h"
 
-static char	*ft_next(char **temp)
+static char	*ft_extract_next_line(char **temp)
 {
-	char	*line;
-	char	*ptr;
+	char	*extr_line;
+	char	*rem_txt;
 
-	ptr = *temp;
-	while (*ptr != '\0' && *ptr != '\n')
-		ptr++;
-	if (*ptr == '\n')
-		ptr++;
-	line = ft_substr (*temp, 0, (size_t)(ptr - *temp));
-	if (!line)
+	rem_txt = *temp;
+	while (*rem_txt != '\0' && *rem_txt != '\n')
+		rem_txt++;
+	if (*rem_txt == '\n')
+		rem_txt++;
+	extr_line = ft_substr (*temp, 0, (size_t)(rem_txt - *temp));
+	if (!extr_line)
 	{
 		free (*temp);
 		*temp = NULL;
 		return (NULL);
 	}
-	ptr = ft_substr (ptr, 0, ft_strlen (ptr));
+	rem_txt = ft_substr (rem_txt, 0, ft_strlen (rem_txt));
 	free (*temp);
-	*temp = ptr;
-	return (line);
+	*temp = rem_txt;
+	return (extr_line);
 }
 
-static char	*ft_read(char *temp, int fd, char *buf)
+static char	*ft_concat_lines(char *temp, int fd, char *buf)
 {
-	ssize_t	i;
+	ssize_t	bytes_read;
 
-	i = 1;
-	while (i && !ft_strchr(temp, '\n'))
+	bytes_read = 1;
+	while (bytes_read && !ft_strchr(temp, '\n'))
 	{
-		i = read(fd, buf, BUFFER_SIZE);
-		if (i == -1)
+		bytes_read = read(fd, buf, BUFFER_SIZE);
+		if (bytes_read == -1)
 		{
 			free(buf);
 			free(temp);
 			return (NULL);
 		}
-		buf[i] = '\0';
+		buf[bytes_read] = '\0';
 		temp = ft_strjoin(temp, buf);
 		if (!temp)
 		{
@@ -61,9 +61,9 @@ static char	*ft_read(char *temp, int fd, char *buf)
 	return (temp);
 }
 
-static char	*ft_read_and_update(char *temp, int fd, char *buf)
+static char	*ft_read_upd8(char *temp, int fd, char *buf)
 {
-	temp = ft_read(temp, fd, buf);
+	temp = ft_concat_lines(temp, fd, buf);
 	if (!temp)
 	{
 		temp = NULL;
@@ -96,8 +96,8 @@ char	*get_next_line(int fd)
 		temp = NULL;
 		return (NULL);
 	}
-	temp = ft_read_and_update(temp, fd, buf);
+	temp = ft_read_upd8(temp, fd, buf);
 	if (!temp)
 		return (NULL);
-	return (ft_next(&temp));
+	return (ft_extract_next_line(&temp));
 }
